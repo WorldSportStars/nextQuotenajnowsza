@@ -1,8 +1,15 @@
-export default function BaseSvg() {
+import React from 'react';
+
+type BaseSvgProps = {
+  width?: number;
+  height?: number;
+};
+
+export default function BaseSvg({ width = 20, height = 20 }: BaseSvgProps) {
   return (
     <svg
-      width="20"
-      height="20"
+      width={width}
+      height={height}
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

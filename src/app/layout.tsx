@@ -33,6 +33,13 @@ export default function RootLayout({
 }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      {/* Dodanie Google Fonts */}
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lobster&family=Open+Sans:wght@400;700&family=Nunito:wght@400;700&family=Oswald:wght@400;700&family=Poppins:wght@400;700&family=Merriweather:wght@400;700&family=Quicksand:wght@400;700&family=Raleway:wght@400;700&family=Ubuntu:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="flex items-center justify-center">
         <OnchainProviders>{children}</OnchainProviders>
       </body>
