@@ -15,6 +15,15 @@ interface GalleryProps {
   nfts: NFT[];
 }
 
+// Definiujemy typy dla propsów komponentów styled
+interface NFTCardProps {
+  bgColor: string;
+  fontColor: string;
+  fontFamily: string;
+  fontSize: string;
+  effect: string;
+}
+
 const GalleryContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -23,7 +32,7 @@ const GalleryContainer = styled.div`
   padding: 20px;
 `;
 
-const NFTCard = styled.div`
+const NFTCard = styled.div<NFTCardProps>`
   background-color: ${(props) => props.bgColor};
   color: ${(props) => props.fontColor};
   font-family: ${(props) => props.fontFamily};
