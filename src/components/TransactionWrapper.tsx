@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import {
   Transaction,
   TransactionButton,
@@ -25,11 +26,14 @@ import {
 
 type TransactionWrapperParams = {
   address: Address;
+  imageURI: string; 
 };
 
 export default function TransactionWrapper({
   address,
+  imageURI,
 }: TransactionWrapperParams) {
+
   const mintTo = address;
 
   const contracts = [
@@ -45,7 +49,9 @@ export default function TransactionWrapper({
         mintReferral,
         comment,
       ],
-      value: parseEther('0.000111'),
+      value: parseEther('0'), // Set to 0 to avoid fees for testing
+      gasLimit: 21000, // Set a default gas limit
+      gasPrice: parseEther('0.0000001'), // Set a default gas price
     },
   ] as unknown as ContractFunctionParameters[];
 
@@ -68,7 +74,7 @@ export default function TransactionWrapper({
         onSuccess={handleSuccess}
       >
         <TransactionButton
-          className="mt-0 mr-auto ml-auto w-[450px] max-w-full text-[white]"
+          className="mt-0 mr-2 ml-auto w-[220px] max-w-full text-[white]"
           text="Collect"
         />
         <TransactionStatus>

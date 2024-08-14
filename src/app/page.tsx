@@ -8,8 +8,9 @@ import WalletWrapper from 'src/components/WalletWrapper';
 import { useAccount } from 'wagmi';
 import LoginButton from '../components/LoginButton';
 import SignupButton from '../components/SignupButton';
-import BaseSvg from 'src/svg/BaseSvg'; 
-import { ChromePicker } from 'react-color'; 
+import BaseSvg from 'src/svg/BaseSvg';
+import { ChromePicker } from 'react-color';
+import html2canvas from 'html2canvas'; // Added for capturing screenshots
 
 const AppContainer = styled.div`
   display: flex;
@@ -41,7 +42,7 @@ const MainContent = styled.div`
   width: 100%;
   max-width: 1200px;
   gap: 40px;
-  background-color: rgba(255, 255, 255, 0.9); 
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -102,7 +103,7 @@ const QuoteContainer = styled.div<{ bgColor: string }>`
 `;
 
 const QuoteText = styled.p<{ fontFamily: string; effect: string; fontColor: string }>`
-  font-size: 1.5rem; 
+  font-size: 1.5rem;
   color: ${(props) => props.fontColor || '#ffffff'};
   text-align: center;
   font-family: ${(props) => props.fontFamily};
@@ -113,7 +114,7 @@ const QuoteText = styled.p<{ fontFamily: string; effect: string; fontColor: stri
   max-width: 100%;
   max-height: 100%;
   word-wrap: break-word;
-  line-height: 1.5; 
+  line-height: 1.5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,7 +134,6 @@ const CollectButtonContainer = styled.div`
   }
 `;
 
-
 export default function Page() {
   const { address } = useAccount();
   const [quote, setQuote] = useState('');
@@ -143,7 +143,9 @@ export default function Page() {
   const [effect, setEffect] = useState('none');
   const [bgColor, setBgColor] = useState('#030712');
   const [fontColor, setFontColor] = useState('#ffffff');
-  const [points, setPoints] = useState(0); // Nowy stan do przechowywania punktów
+  const [points, setPoints] = useState(0);
+  const [imageURI, setImageURI] = useState('');
+  const [isMinting, setIsMinting] = useState(false);
 
   const handleRandomQuote = async () => {
     const endpoint = category === 'AI' ? '' : 'famous-quotes';
@@ -151,7 +153,6 @@ export default function Page() {
       const response = await axios.get(`https://api.quotable.io/random${endpoint ? `?tags=${endpoint}` : ''}`);
       setQuote(response.data.content);
       setAuthor(category === 'LEGENDARY' ? response.data.author : '');
-      // Dodaj punkty w zależności od kategorii
       const newPoints = category === 'AI' ? 25 : 100;
       setPoints(points + newPoints);
     } catch (error) {
@@ -180,7 +181,6 @@ export default function Page() {
       const response = await axios.get(`https://api.quotable.io/random${endpoint ? `?tags=${endpoint}` : ''}`);
       setQuote(response.data.content);
       setAuthor(randomCategory === 'LEGENDARY' ? response.data.author : '');
-      // Dodaj punkty w zależności od kategorii
       const newPoints = randomCategory === 'AI' ? 25 : 100;
       setPoints(points + newPoints);
     } catch (error) {
@@ -188,17 +188,25 @@ export default function Page() {
     }
   };
 
+  const handleMint = async () => {
+    setIsMinting(true);
+
+    const element = document.getElementById('quote-container');
+    if (element) {
+      const canvas = await html2canvas(element);
+      const dataUrl = canvas.toDataURL('image/png');
+      setImageURI(dataUrl);
+    }
+
+    setIsMinting(false);
+  };
+
   return (
     <AppContainer>
       <Header>
         <div className="flex items-center gap-3">
-          <BaseSvg width={64} height={64} /> 
-          <a
-            href="#"
-            title="DailyQuotes On Base"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <BaseSvg width={64} height={64} />
+          <a href="#" title="DailyQuotes On Base" target="_blank" rel="noreferrer">
             <h1 style={{ color: '#fff', fontSize: '2rem', fontWeight: 'bold', fontFamily: 'Oswald' }}>DailyQuotes On Base</h1>
           </a>
         </div>
@@ -211,21 +219,13 @@ export default function Page() {
       <MainContent>
         <ControlPanel>
           <label>Category</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="border rounded px-4 py-2 mb-4"
-          >
+          <select value={category} onChange={(e) => setCategory(e.target.value)} className="border rounded px-4 py-2 mb-4">
             <option value="AI">AI (All)</option>
             <option value="LEGENDARY">LEGENDARY (Famous)</option>
           </select>
 
           <label>Font</label>
-          <select
-            value={fontFamily}
-            onChange={(e) => setFontFamily(e.target.value)}
-            className="border rounded px-4 py-2 mb-4"
-          >
+          <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} className="border rounded px-4 py-2 mb-4">
             <option value="Arial" style={{ fontFamily: 'Arial' }}>Arial</option>
             <option value="Courier Prime" style={{ fontFamily: 'Courier Prime' }}>Courier Prime</option>
             <option value="Georgia" style={{ fontFamily: 'Georgia' }}>Georgia</option>
@@ -241,11 +241,7 @@ export default function Page() {
           </select>
 
           <label>Effect</label>
-          <select
-            value={effect}
-            onChange={(e) => setEffect(e.target.value)}
-            className="border rounded px-4 py-2 mb-4"
-          >
+          <select value={effect} onChange={(e) => setEffect(e.target.value)} className="border rounded px-4 py-2 mb-4">
             <option value="none">None</option>
             <option value="bold">Bold</option>
             <option value="italic">Italic</option>
@@ -260,9 +256,7 @@ export default function Page() {
             Random Quote
           </button>
 
-          <PointsContainer>
-            Points: {points}
-          </PointsContainer>
+          <PointsContainer>Points: {points}</PointsContainer>
         </ControlPanel>
 
         <ColorPickerPanel>
@@ -274,7 +268,7 @@ export default function Page() {
         </ColorPickerPanel>
 
         <div>
-          <QuoteContainer bgColor={bgColor}>
+          <QuoteContainer id="quote-container" bgColor={bgColor}>
             <div className="flex h-full w-full items-center justify-center rounded-xl">
               <div className="rounded-xl px-4 py-[11px]">
                 <QuoteText fontFamily={fontFamily} effect={effect} fontColor={fontColor}>
@@ -286,12 +280,25 @@ export default function Page() {
 
           <CollectButtonContainer>
             {address ? (
-              <TransactionWrapper address={address} />
+              <>
+                <button
+                  onClick={async () => {
+                    await handleMint();
+                    document.getElementById('collectButton')?.click();
+                  }}
+                  className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+                >
+                  Capture Quote & Mint
+                </button>
+                {imageURI && (
+                  <TransactionWrapper
+                    address={address}
+                    imageURI={imageURI}
+                  />
+                )}
+              </>
             ) : (
-              <WalletWrapper
-                className="w-[450px] max-w-full"
-                text="Sign in to collect"
-              />
+              <WalletWrapper className="w-[450px] max-w-full" text="Sign in to collect" />
             )}
           </CollectButtonContainer>
         </div>
