@@ -49,7 +49,8 @@ export default function TransactionWrapper({
         comment,
       ],
       value: parseEther('0.001'), // Koszt mintowania 0.001 ETH
-      // Usunięcie gasLimit i gasPrice, aby pozwolić sieci na oszacowanie
+      gasLimit: 200000, // Limit gazu, dostosuj w razie potrzeby
+      gasPrice: parseEther('0.00000002'), // Cena gazu, dostosuj w razie potrzeby
     },
   ] as unknown as ContractFunctionParameters[];
 

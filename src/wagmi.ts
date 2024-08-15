@@ -6,10 +6,9 @@ import {
   rainbowWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { useMemo } from 'react';
-import { createConfig, http } from 'wagmi';
+import { http, createConfig } from 'wagmi';
 import { baseSepolia } from 'wagmi/chains';
 import { NEXT_PUBLIC_WC_PROJECT_ID } from './config';
-import { BASE_SEPOLIA_RPC_URL, BASE_SEPOLIA_CHAIN_ID } from './constants'; 
 
 export function useWamigConfig() {
   const projectId = NEXT_PUBLIC_WC_PROJECT_ID ?? '';
@@ -39,10 +38,12 @@ export function useWamigConfig() {
 
     const wagmiConfig = createConfig({
       chains: [baseSepolia],
+      // turn off injected provider discovery
+      multiInjectedProviderDiscovery: false,
       connectors,
       ssr: true,
       transports: {
-        [BASE_SEPOLIA_CHAIN_ID]: http(BASE_SEPOLIA_RPC_URL), // Upewnij się, że używasz poprawnego Chain ID i URL RPC
+        [baseSepolia.id]: http(),
       },
     });
 
