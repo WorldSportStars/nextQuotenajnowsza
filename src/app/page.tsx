@@ -10,7 +10,7 @@ import LoginButton from '../components/LoginButton';
 import SignupButton from '../components/SignupButton';
 import BaseSvg from 'src/svg/BaseSvg';
 import { ChromePicker } from 'react-color';
-import html2canvas from 'html2canvas'; // Added for capturing screenshots
+import html2canvas from 'html2canvas';
 
 const AppContainer = styled.div`
   display: flex;
@@ -162,7 +162,20 @@ export default function Page() {
 
   const handleRandomEverything = async () => {
     const categories = ['AI', 'LEGENDARY'];
-    const fonts = ['Arial', 'Courier Prime', 'Georgia', 'Times New Roman', 'Verdana', 'Roboto', 'Lobster', 'Montserrat', 'Pacifico', 'Playfair Display', 'Raleway', 'Inconsolata'];
+    const fonts = [
+      'Arial',
+      'Courier Prime',
+      'Georgia',
+      'Times New Roman',
+      'Verdana',
+      'Roboto',
+      'Lobster',
+      'Montserrat',
+      'Pacifico',
+      'Playfair Display',
+      'Raleway',
+      'Inconsolata',
+    ];
     const effects = ['none', 'bold', 'italic', 'underline'];
     const randomCategory = categories[Math.floor(Math.random() * categories.length)];
     const randomFont = fonts[Math.floor(Math.random() * fonts.length)];
@@ -196,6 +209,8 @@ export default function Page() {
       const canvas = await html2canvas(element);
       const dataUrl = canvas.toDataURL('image/png');
       setImageURI(dataUrl);
+
+      // Implement the minting logic here if necessary
     }
 
     setIsMinting(false);
@@ -207,7 +222,9 @@ export default function Page() {
         <div className="flex items-center gap-3">
           <BaseSvg width={64} height={64} />
           <a href="#" title="DailyQuotes On Base" target="_blank" rel="noreferrer">
-            <h1 style={{ color: '#fff', fontSize: '2rem', fontWeight: 'bold', fontFamily: 'Oswald' }}>DailyQuotes On Base</h1>
+            <h1 style={{ color: '#fff', fontSize: '2rem', fontWeight: 'bold', fontFamily: 'Oswald' }}>
+              DailyQuotes On Base
+            </h1>
           </a>
         </div>
         <div className="flex items-center gap-3">
@@ -287,14 +304,12 @@ export default function Page() {
                     document.getElementById('collectButton')?.click();
                   }}
                   className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+                  disabled={isMinting} // Disable button while minting
                 >
-                  Capture Quote & Mint
+                  {isMinting ? 'Minting...' : 'Capture Quote & Mint'}
                 </button>
                 {imageURI && (
-                  <TransactionWrapper
-                    address={address}
-                    imageURI={imageURI}
-                  />
+                  <TransactionWrapper address={address} imageURI={imageURI} />
                 )}
               </>
             ) : (

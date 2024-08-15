@@ -22,6 +22,10 @@ if (!NEXT_PUBLIC_THIRDWEB_API_KEY) {
   console.warn('Warning: NEXT_PUBLIC_THIRDWEB_API_KEY is not set. Thirdweb integration may fail.');
 }
 
+// Base Sepolia RPC URL and Chain ID using Coinbase API
+export const BASE_SEPOLIA_RPC_URL = `https://api.developer.coinbase.com/rpc/v1/base-sepolia/${NEXT_PUBLIC_CDP_API_KEY}`;
+export const BASE_SEPOLIA_CHAIN_ID = 84532; // Ensure this matches the correct chain ID
+
 // Additional checks for the environment configuration
 if (process.env.NODE_ENV === 'development') {
   console.log('Running in development mode.');

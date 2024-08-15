@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import {
   Transaction,
   TransactionButton,
@@ -15,18 +14,18 @@ import type { Address, ContractFunctionParameters } from 'viem';
 import { parseEther } from 'viem';
 import {
   BASE_SEPOLIA_CHAIN_ID,
-  collectionAddress,
-  comment,
   mintABI,
   mintContractAddress,
+  collectionAddress,
   mintReferral,
   quantity,
   tokenId,
+  comment,
 } from '../constants';
 
 type TransactionWrapperParams = {
   address: Address;
-  imageURI: string; 
+  imageURI: string;
 };
 
 export default function TransactionWrapper({
@@ -49,9 +48,8 @@ export default function TransactionWrapper({
         mintReferral,
         comment,
       ],
-      value: parseEther('0'), // Set to 0 to avoid fees for testing
-      gasLimit: 21000, // Set a default gas limit
-      gasPrice: parseEther('0.0000001'), // Set a default gas price
+      value: parseEther('0.001'), // Koszt mintowania 0.001 ETH
+      // Usunięcie gasLimit i gasPrice, aby pozwolić sieci na oszacowanie
     },
   ] as unknown as ContractFunctionParameters[];
 
